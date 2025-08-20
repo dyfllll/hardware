@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "*.compute": "hlsl",
+        "oled.h": "c",
+        "driver_irq.h": "c",
+        "stm32f1xx_hal.h": "c",
+        "stdint.h": "c",
+        "red_nec.h": "c",
+        "compare": "c",
+        "common.h": "c",
+        "dwt_systime.h": "c",
+        "inttypes.h": "c"
+    }
+}
