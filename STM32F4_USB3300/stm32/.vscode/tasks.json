@@ -1,0 +1,113 @@
+{
+    "version": "2.0.0",
+    "windows": {
+        "options": {
+            "shell": {
+                "executable": "cmd.exe",
+                "args": [
+                    "/d",
+                    "/c"
+                ]
+            }
+        }
+    },
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "flash",
+            "command": "STM32_Programmer_CLI",
+            "args": [
+                "--connect",
+                "port=swd",
+                "--download",
+                "${command:cmake.launchTargetPath}",
+                // Let CMake extension decide executable: "${command:cmake.launchTargetPath}",
+                "-hardRst", // Hardware reset - if rst pin is connected
+                "-rst", // Software reset (backup)
+                "--start" // Start execution
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "flash select",
+            "command": "STM32_Programmer_CLI",
+            "args": [
+                "--connect",
+                "port=swd",
+                "--download",
+                "hex/${input:flash_target}",
+                // Let CMake extension decide executable: "${command:cmake.launchTargetPath}",
+                "-hardRst", // Hardware reset - if rst pin is connected
+                "-rst", // Software reset (backup)
+                "--start" // Start execution
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build + flash",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build",
+                "flash",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "cmake",
+            "label": "build",
+            "command": "cleanRebuild",
+            "targets": [
+                "all"
+            ],
+            "preset": "${command:cmake.activeBuildPresetName}",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake template clean rebuild task"
+        },
+        {
+            "type": "shell",
+            "label": "CubeProg: List all available communication interfaces",
+            "command": "STM32_Programmer_CLI",
+            "args": [
+                "--list"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "flash_target",
+            "type": "promptString",
+            "description": "Flash target hex file",
+            "default": "foc.elf"
+        },
+    ]
+}
